@@ -1,8 +1,10 @@
 # HashSerializer
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/hash_serializer`. To experiment with that code, run `bin/console` for an interactive prompt.
+A simple Hash to JSON serializer with some helpers to improve JSON model columns.
 
-TODO: Delete this and the text above, and describe your gem
+## Back Story
+
+`HashSerializer` was birthed from the need of converting a `Hash` to and from JSON for ActiveRecord JSON columns, specifically tested on Postgres. The need grew to monitoring `Hash` changes in Rails models and creating dynamic methods for accessing the hash keys as if they were model properties. The need to prefix the columns came apparent when [Stripe](https://stripe.com) data was used in a hash and it contained keys like `id` and `object`.
 
 ## Installation
 
@@ -22,7 +24,66 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In a model with a JSON column (ex - `billing_fields`) and serialize it:
+
+```ruby
+class Customer < ActiveRecord::Base
+  serialize :billing_fields, HashSerializer
+end
+```
+
+    $ customer = Customer.new(billing_fields: { name: 'John C. Bland II' })
+    $ customer.billing_fields[:name]
+    => John C. Bland II
+
+This does leave the column open to any keys so it is great for development while equally terrible for security. You can utilize the `HashSerializer::Helpers` to add key validation:
+
+```ruby
+class Customer < ActiveRecord::Base
+  serialize :billing_fields, HashSerializer
+
+  validate :validate_billing_fields
+
+  def validate_billing_fields
+    invalid_keys = validate_hash_serializer :billing_hash, %w(name)
+    errors.add(:billing_fields, 'has invalid keys: #{invalid_fields.join(', ')}') unless invalid_keys.empty?
+  end
+end
+```
+
+    $ customer = Customer.new(billing_fields: { name: 'John C. Bland II' })
+    $ customer.billing_fields[:dumb_stuff] = true
+    $ customer.valid?
+    => false
+
+Since some JSON keys may be best served with conflicting names to the housed model, you can also generate custom methods for each key for direct access to the hash without using hash syntax. It also allows for determining if a value has changed.
+
+```ruby
+class Customer < ActiveRecord::Base
+  serialize :billing_fields, HashSerializer
+
+  store_accessor_with_prefix :billing_fields, 'billing', %w(name)
+end
+```
+
+    $ customer = Customer.new(billing_fields: { name: 'John C. Bland II' })
+    $ customer.billing_name
+    => 'John C. Bland II'
+
+    $ customer.billing_name = 'John Bland III'
+    $ customer.billing_name
+    => 'John Bland III'
+
+    $ customer.billing_fields[:name]
+    => John Bland III
+
+    $ customer.billing_name_changed?
+    => true
+
+    $ customer.billing_fields_changed?
+    => true
+
+**NOTE:** To hide the methods, you can include them in a Concern and call the included methods within the `included` block.
 
 ## Development
 
@@ -32,10 +93,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/hash_serializer. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/johncblandii/hash_serializer. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
