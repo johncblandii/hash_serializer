@@ -19,15 +19,15 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
-  spec.required_ruby_version = '>= 2.1.0'
+  spec.required_ruby_version = '>= 2.2.0'
 
   spec.add_development_dependency 'bundler', '~> 1.11'
-  spec.add_development_dependency 'codeclimate-test-reporter'
-  spec.add_development_dependency 'guard-rspec'
-  spec.add_development_dependency 'guard-rubocop'
+  spec.add_development_dependency 'codeclimate-test-reporter', '~> 0.4.8'
+  spec.add_development_dependency 'guard-rspec', '~> 4.6', '>= 4.6.5'
+  spec.add_development_dependency 'guard-rubocop', '~> 1.2', '>= 1.2.0'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'yard'
+  spec.add_development_dependency 'rubocop', '~> 0.39.0'
+  spec.add_development_dependency 'simplecov', '~> 0.11.2'
+  spec.add_development_dependency 'yard', '~> 0.8.7.6'
 end
