@@ -1,0 +1,13 @@
+language: ruby
+
+rvm:
+  - 2.3.0
+  - 2.2.4
+  - 2.1.8
+
+gemfile:
+  - Gemfile
+
+cache: bundler
+
+script: 'bundle exec rake'

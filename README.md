@@ -1,5 +1,10 @@
 # HashSerializer
 
+[![Build Status](https://api.travis-ci.org/johncblandii/hash_serializer.svg?branch=master)](http://travis-ci.org/johncblandii/hash_serializer)
+[![Code Climate](https://codeclimate.com/github/johncblandii/hash_serializer/badges/gpa.svg)](https://codeclimate.com/github/johncblandii/hash_serializer)
+[![Test Coverage](https://codeclimate.com/github/johncblandii/hash_serializer/badges/coverage.svg)](https://codeclimate.com/github/johncblandii/hash_serializer/coverage)
+[![Issue Count](https://codeclimate.com/github/johncblandii/hash_serializer/badges/issue_count.svg)](https://codeclimate.com/github/johncblandii/hash_serializer)
+
 A simple Hash to JSON serializer with some helpers to improve JSON model columns.
 
 ## Back Story
