@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ['John C. Bland II']
   spec.email         = ['johncblandii@gmail.com']
 
-  spec.summary       = 'A serializer and helpers for Postgres JSON columns.'
-  spec.description   = 'Stuff happens'
+  spec.summary       = 'A simple Hash to JSON serializer with some helpers to improve JSON model columns.'
+  spec.description   = 'A simple Hash to JSON serializer with some helpers to improve JSON model columns.'
   spec.homepage      = 'https://github.com/johncblandii/hash_serializer'
   spec.license       = 'MIT'
 
