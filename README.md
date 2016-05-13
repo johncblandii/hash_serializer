@@ -29,11 +29,13 @@ Or install it yourself as:
 
 ## Usage
 
-In a model with a JSON column (ex - `billing_fields`) and serialize it:
+### HashSerializer::Serializer
+
+In a model with a JSON column (ex - `billing_fields`), use `HashSerializer::Serializer` serialize a Hash to JSON.
 
 ```ruby
 class Customer < ActiveRecord::Base
-  serialize :billing_fields, HashSerializer
+  serialize :billing_fields, HashSerializer::Serializer
 end
 ```
 
@@ -41,17 +43,23 @@ end
     $ customer.billing_fields[:name]
     => John C. Bland II
 
-This does leave the column open to any keys so it is great for development while equally terrible for security. You can utilize the `HashSerializer::Helpers` to add key validation:
+This leaves the column open to any structure you want so it is great for development while equally terrible for data integrity.
+
+### HashSerializer::Helpers
+
+You can utilize the `HashSerializer::Helpers` to add JSON key validation.
 
 ```ruby
 class Customer < ActiveRecord::Base
-  serialize :billing_fields, HashSerializer
+  include HashSerializer::Helpers
+
+  serialize :billing_fields, HashSerializer::Serializer
 
   validate :validate_billing_fields
 
   def validate_billing_fields
     invalid_keys = validate_hash_serializer :billing_hash, %w(name)
-    errors.add(:billing_fields, 'has invalid keys: #{invalid_fields.join(', ')}') unless invalid_keys.empty?
+    errors.add(:billing_fields, 'has invalid keys: #{invalid_fields.join(', ')}') unless invalid_keys.blank?
   end
 end
 ```
@@ -61,13 +69,15 @@ end
     $ customer.valid?
     => false
 
-Since some JSON keys may be best served with conflicting names to the housed model, you can also generate custom methods for each key for direct access to the hash without using hash syntax. It also allows for determining if a value has changed.
+Some JSON keys may conflict with names on the including model. You can also generate custom methods for each key for direct access to the hash without using hash syntax. It also allows for determining if a value has changed.
 
 ```ruby
 class Customer < ActiveRecord::Base
-  serialize :billing_fields, HashSerializer
+  include HashSerializer::Helpers
 
-  store_accessor_with_prefix :billing_fields, 'billing', %w(name)
+  serialize :billing_fields, HashSerializer::Serializer
+
+  hash_accessor_with_prefix :billing_fields, 'billing', %w(name)
 end
 ```
 
@@ -87,8 +97,6 @@ end
 
     $ customer.billing_fields_changed?
     => true
-
-**NOTE:** To hide the methods, you can include them in a Concern and call the included methods within the `included` block.
 
 ## Development
 

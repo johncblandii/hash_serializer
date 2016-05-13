@@ -1,31 +1,9 @@
 require 'spec_helper'
 
-# Helper model for testing purposes
-class HelpersTestModel
-  include HashSerializer::Helpers
-
-  def initialize(hash = {})
-    @hash = hash
-  end
-
-  def billing=(hash)
-    @hash = hash
-  end
-
-  def billing
-    @hash
-  end
-
-  def billing_will_change!
-  end
-end
-
 describe HashSerializer::Helpers do
   let(:hash) { { name: 'John C. Bland II', zipcode: 78_377 } }
 
-  subject { HelpersTestModel.new }
-  let(:valid_keys) { %w(name zipcode) }
-  let(:invalid_keys) { %w(invalid keys) }
+  subject { CustomerWithHash.new }
 
   context 'validate_hash_serializer_keys' do
     it 'should return invalid keys' do
@@ -33,66 +11,46 @@ describe HashSerializer::Helpers do
       hash['keys'] = false
 
       subject.billing = hash
-      expect(subject.validate_hash_serializer_keys(:billing, valid_keys)).to eq(invalid_keys)
+
+      errors = subject.validate_hash_serializer_keys(:billing, CustomerWithHash::VALID_KEYS)
+
+      expect(errors).to eq(CustomerWithHash::INVALID_KEYS)
     end
 
     it 'should return nil if no invalid keys exist' do
-      expect(subject.validate_hash_serializer_keys(:billing, valid_keys)).to be_nil
+      expect(subject.validate_hash_serializer_keys(:billing, CustomerWithHash::VALID_KEYS)).to be_nil
     end
   end
 
   context 'hash_accessor_with_prefix' do
-    let(:prefix) { 'billing_stuff' }
-
-    context 'not called' do
-      it 'setters do not exist' do
-        expect(subject.respond_to?(:billing_stuff_name=)).to be_falsey
-        expect(subject.respond_to?(:billing_stuff_zipcode=)).to be_falsey
-      end
-
-      it 'getters do not exist' do
-        expect(subject.respond_to?(:billing_stuff_name)).to be_falsey
-        expect(subject.respond_to?(:billing_stuff_zipcode)).to be_falsey
-      end
-
-      it 'changed? methods exist' do
-        expect(subject.respond_to?(:billing_stuff_name_changed?)).to be_falsey
-        expect(subject.respond_to?(:billing_stuff_zipcode_changed?)).to be_falsey
-      end
+    it 'setters exist' do
+      expect(subject.respond_to?(:billing_stuff_name=)).to be_truthy
+      expect(subject.respond_to?(:billing_stuff_zipcode=)).to be_truthy
     end
 
-    context 'called' do
-      before(:each) { subject.hash_accessor_with_prefix(:billing, prefix, valid_keys) }
+    it 'getters exist' do
+      expect(subject.respond_to?(:billing_stuff_name)).to be_truthy
+      expect(subject.respond_to?(:billing_stuff_zipcode)).to be_truthy
+    end
 
-      it 'setters exist' do
-        expect(subject.respond_to?(:billing_stuff_name=)).to be_truthy
-        expect(subject.respond_to?(:billing_stuff_zipcode=)).to be_truthy
-      end
+    it 'changed? methods exist' do
+      expect(subject.respond_to?(:billing_stuff_name_changed?)).to be_truthy
+      expect(subject.respond_to?(:billing_stuff_zipcode_changed?)).to be_truthy
+    end
 
-      it 'getters exist' do
-        expect(subject.respond_to?(:billing_stuff_name)).to be_truthy
-        expect(subject.respond_to?(:billing_stuff_zipcode)).to be_truthy
-      end
+    it 'methods works' do
+      new_name = 'John Bland III'
+      new_zipcode = 85_008
 
-      it 'changed? methods exist' do
-        expect(subject.respond_to?(:billing_stuff_name_changed?)).to be_truthy
-        expect(subject.respond_to?(:billing_stuff_zipcode_changed?)).to be_truthy
-      end
+      expect(subject).to receive(:billing_will_change!).twice
 
-      it 'methods works' do
-        new_name = 'John Bland III'
-        new_zipcode = 85_008
+      subject.billing_stuff_name = new_name
+      subject.billing_stuff_zipcode = new_zipcode
 
-        expect(subject).to receive(:billing_will_change!).twice
-
-        subject.billing_stuff_name = new_name
-        subject.billing_stuff_zipcode = new_zipcode
-
-        expect(subject.billing_stuff_name).to eq(new_name)
-        expect(subject.billing_stuff_name_changed?).to be_truthy
-        expect(subject.billing_stuff_zipcode).to eq(new_zipcode)
-        expect(subject.billing_stuff_zipcode_changed?).to be_truthy
-      end
+      expect(subject.billing_stuff_name).to eq(new_name)
+      expect(subject.billing_stuff_name_changed?).to be_truthy
+      expect(subject.billing_stuff_zipcode).to eq(new_zipcode)
+      expect(subject.billing_stuff_zipcode_changed?).to be_truthy
     end
   end
 end
