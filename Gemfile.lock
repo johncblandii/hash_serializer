@@ -68,7 +68,7 @@ GEM
       method_source (~> 0.8.1)
       slop (~> 3.4)
     rainbow (2.1.0)
-    rake (10.5.0)
+    rake (13.0.1)
     rb-fsevent (0.9.7)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
@@ -119,7 +119,7 @@ DEPENDENCIES
   guard-rspec (~> 4.6, >= 4.6.5)
   guard-rubocop (~> 1.2, >= 1.2.0)
   hash_serializer!
-  rake (~> 10.0)
+  rake (~> 13.0)
   rspec (~> 3.0)
   rubocop (~> 0.39.0)
   simplecov (~> 0.11.2)
