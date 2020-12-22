@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.39.0'
   spec.add_development_dependency 'simplecov', '~> 0.11.2'
-  spec.add_development_dependency 'yard', '~> 0.8.7.6'
+  spec.add_development_dependency 'yard', '~> 0.9.25'
   spec.add_development_dependency 'sqlite3', '~> 1.3.11'
   spec.add_development_dependency 'activerecord', '~> 4.2.6'
   spec.add_development_dependency 'activerecord-nulldb-adapter', '~> 0.3.2'
