@@ -27,7 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'guard-rubocop', '~> 1.2', '>= 1.2.0'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop', '~> 0.39.0'
+  spec.add_development_dependency 'rubocop', '~> 0.68.1'
   spec.add_development_dependency 'simplecov', '~> 0.11.2'
   spec.add_development_dependency 'yard', '~> 0.8.7.6'
   spec.add_development_dependency 'sqlite3', '~> 1.3.11'
